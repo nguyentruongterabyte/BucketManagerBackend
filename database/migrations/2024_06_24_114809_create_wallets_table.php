@@ -20,12 +20,11 @@ return new class extends Migration
             $table->string('_name');
             $table->string('_wallet_type_code', 4);
             $table->double('_initial_amount');
-            $table->unsignedBigInteger('_color_id');
+            $table->string('_color', 10);
             $table->boolean('_exclude');
 
             $table->foreign('_account_id')->references('id')->on('users');
             $table->foreign('_wallet_type_code')->references('_code')->on('wallet_types');
-            $table->foreign('_color_id')->references('id')->on('colors');
         });
     }
 

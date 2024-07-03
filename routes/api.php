@@ -33,16 +33,21 @@ Route::put('/example/{id}', [ExampleController::class, 'update']);
 Route::delete('/example/{id}', [ExampleController::class, 'destroy']);
 
 // Currency
-Route::middleware('auth:sactum')->get('/currency', [CurrencyController::class, 'index']);
-Route::post('/currency', [CurrencyController::class, 'store']);
+Route::get('/currency/search', [CurrencyController::class, 'search']);
+Route::get('/currency', [CurrencyController::class, 'index']);
+Route::post('/currency', [CurrencyController::class, 'store'])->middleware('custom.auth.sanctum');
+Route::post('/currency/import', [CurrencyController::class, 'importFromJson'])->middleware('custom.auth.sanctum');
 Route::get('/currency/{id}', [CurrencyController::class, 'show']);
-Route::put('/currency/{id}', [CurrencyController::class, 'update']);
-Route::delete('/currency/{id}', [CurrencyController::class, 'destroy']);
+Route::put('/currency/{id}', [CurrencyController::class, 'update'])->middleware('custom.auth.sanctum');
+Route::delete('/currency/{id}', [CurrencyController::class, 'destroy'])->middleware('custom.auth.sanctum');
 
 // Account
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
-
+Route::post('/auth/refresh', [AuthController::class, 'refresh']);
+Route::post('/auth/checker/email', [AuthController::class, 'emailChecker']);
+Route::post('/auth/checker/password', [AuthController::class, 'passwordChecker']);
+Route::middleware('custom.auth:sanctum')->post('auth/logout', [AuthController::class, 'logout']);
 // Color
 Route::get('/color', [ColorController::class, 'index']);
 Route::post('/color', [ColorController::class, 'store']);

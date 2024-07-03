@@ -27,7 +27,7 @@ class LogRequestResponse
         $response = $next($request);
         
         // Log the outgoing response
-        Log::info('Respones: ', [
+        Log::info('Response: ', [ 
             'status' => $response->status(),
             'headers' => $response->headers->all(),
             'body' => $response->getContent()

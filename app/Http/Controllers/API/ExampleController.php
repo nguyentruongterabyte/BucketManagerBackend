@@ -15,7 +15,7 @@ class ExampleController extends Controller
 
         if ($examples->isEmpty()) {
             $response = new ResponseObject(404, 'No content');
-            return response()->json($response->toArray(), 200);
+            return response()->json($response->toArray(), 404);
         }
 
         $response = new ResponseObject(200, 'Success', $examples);

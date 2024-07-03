@@ -17,12 +17,12 @@ return new class extends Migration
         $table->id();
         $table->string('_name');
         $table->string('_email')->unique();
-        $table->timestamp('_email_verified_at')->nullable();
+        $table->timestamp('email_verified_at')->nullable();
         $table->string('_password');
         $table->rememberToken();
         $table->timestamps();
         
-        $table->unsignedBigInteger('_initial_currency_id');
+        $table->unsignedBigInteger('_initial_currency_id')->nullable();
         
         // Create foreign key references currencies table
         $table->foreign('_initial_currency_id')->references('id')->on('currencies');

@@ -21,6 +21,7 @@ class User extends Authenticatable
         '_name',
         '_email',
         '_password',
+        '_initial_currency_id'
     ];
 
     /**
@@ -31,6 +32,9 @@ class User extends Authenticatable
     protected $hidden = [
         '_password',
         '_remember_token',
+        '_initial_currency_id',
+        'created_at',
+        'updated_at'
     ];
 
     /**
@@ -39,6 +43,12 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        '_email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime',
     ];
+
+    protected $table = 'users';
+
+    public function currency() {
+        return $this->belongsTo(Currency::class, '_initial_currency_id');
+    }
 }

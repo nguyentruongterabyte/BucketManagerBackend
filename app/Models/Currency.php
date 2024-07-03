@@ -22,4 +22,15 @@ class Currency extends Model
         '_fractional_unit',
         '_number_to_basic'
     ];
+
+    protected $table = 'currencies';
+
+    protected $hidden = [
+        'created_at', 
+        'updated_at'
+    ];
+
+    public function users() {
+        return $this->hasMany(User::class, '_initial_currency_id');
+    }
 }
