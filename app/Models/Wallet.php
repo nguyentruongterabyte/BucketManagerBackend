@@ -19,8 +19,15 @@ class Wallet extends Model
         '_name',
         '_wallet_type_code',
         '_initial_amount',
+        '_amount',
         '_color',
         '_exclude',
+    ];
+
+    protected $hidden = [
+        'updated_at',
+        'created_at', 
+        '_wallet_type_code'
     ];
 
     protected $table = 'wallets';
@@ -32,5 +39,5 @@ class Wallet extends Model
     public function walletType() {
         return $this->belongsTo(WalletType::class, '_wallet_type_code', '_code');
     }
-
+    
 }

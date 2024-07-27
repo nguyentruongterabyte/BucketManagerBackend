@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\API\AccountController;
+
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\ColorController;
+use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\API\CurrencyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ExampleController;
+use App\Http\Controllers\api\TransactionController;
+use App\Http\Controllers\API\WalletController;
 use App\Http\Controllers\API\WalletTypeController;
-use App\Models\ResponseObject;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,18 +42,21 @@ Route::put('/currency/{id}', [CurrencyController::class, 'update'])->middleware(
 Route::delete('/currency/{id}', [CurrencyController::class, 'destroy'])->middleware('custom.auth.sanctum');
 
 // Account
+Route::get('/auth/{id}', [AuthController::class, 'show'])->middleware(['custom.auth.sanctum', 'check.user.id']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/refresh', [AuthController::class, 'refresh']);
 Route::post('/auth/checker/email', [AuthController::class, 'emailChecker']);
 Route::post('/auth/checker/password', [AuthController::class, 'passwordChecker']);
-Route::middleware('custom.auth:sanctum')->post('auth/logout', [AuthController::class, 'logout']);
-// Color
-Route::get('/color', [ColorController::class, 'index']);
-Route::post('/color', [ColorController::class, 'store']);
-Route::get('/color/{id}', [ColorController::class, 'show']);
-Route::put('/color/{id}', [ColorController::class, 'update']);
-Route::delete('/color/{id}', [ColorController::class, 'destroy']);
+Route::post('/auth/password/reset-request', [AuthController::class, 'sendResetPasswordEmail']);
+Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('custom.auth.sanctum');
+
+Route::get('/auth/password/reset', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/auth/password/submit', [AuthController::class, 'updatePassword']);
+
+// Wallet
+Route::post('/wallet', [WalletController::class, 'store'])->middleware(['custom.auth.sanctum', 'check.user.id']);
+Route::put('/wallet/update/{id}/{walletId}', [WalletController::class ,'update'])->middleware(['custom.auth.sanctum', 'check.user.id']);
 
 // Wallet type
 Route::get('/wallet-type', [WalletTypeController::class, 'index']);
@@ -61,3 +64,11 @@ Route::post('/wallet-type', [WalletTypeController::class, 'store']);
 Route::get('/wallet-type/{code}', [WalletTypeController::class, 'show']);
 Route::put('/wallet-type/{code}', [WalletTypeController::class, 'update']);
 Route::delete('/wallet-type/{code}', [WalletTypeController::class, 'destroy']);
+
+// Transaction
+Route::post('/transaction', [TransactionController::class, 'store'])->middleware(['custom.auth.sanctum']);
+Route::get('/transaction/{id}', [TransactionController::class, 'getByUserId'])->middleware(['custom.auth.sanctum', 'check.user.id']);
+Route::put('/transaction/update/{id}/{transactionId}', [TransactionController::class, 'update'])->middleware(['custom.auth.sanctum', 'check.user.id']);
+
+// Category
+Route::get('/category', [CategoryController::class, 'index']);

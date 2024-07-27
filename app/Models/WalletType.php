@@ -19,6 +19,11 @@ class WalletType extends Model
         '_name',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
     protected $table = 'wallet_types';
 
     public function wallets() {

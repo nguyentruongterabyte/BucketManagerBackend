@@ -16,11 +16,8 @@ class Currency extends Model
      */
     protected $fillable = [
         '_ISO_code',
-        '_state_territory',
         '_symbol',
         '_currency',
-        '_fractional_unit',
-        '_number_to_basic'
     ];
 
     protected $table = 'currencies';

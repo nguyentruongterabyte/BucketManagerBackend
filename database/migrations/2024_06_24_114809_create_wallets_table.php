@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('_wallet_type_code', 4);
             $table->double('_initial_amount');
             $table->string('_color', 10);
-            $table->boolean('_exclude');
+            $table->boolean('_exclude')->default(0);
 
             $table->foreign('_account_id')->references('id')->on('users');
             $table->foreign('_wallet_type_code')->references('_code')->on('wallet_types');

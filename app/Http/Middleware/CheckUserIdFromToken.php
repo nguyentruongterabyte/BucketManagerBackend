@@ -5,10 +5,9 @@ namespace App\Http\Middleware;
 use App\Models\ResponseObject;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 
-class CustomAuthSanctum
+class CheckUserIdFromToken
 {
     /**
      * Handle an incoming request.
@@ -17,26 +16,33 @@ class CustomAuthSanctum
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
+
     public function handle(Request $request, Closure $next)
     {
-       $token = $request->bearerToken();
+        // Get token in request 
+        $token = $request->bearerToken();
 
-        if (!$token) {
-            $response = new ResponseObject(401, 'Unauthorized');
-            return response()->json($response->toArray(), 401);
-        }
-
+        // find token in table personal_access_tokens
         $accessToken = PersonalAccessToken::findToken($token);
-
+        
         if (!$accessToken) {
-            $response = new ResponseObject(401, 'Unauthorized');
+            $response = new ResponseObject(401, 'Invalid token');
             return response()->json($response->toArray(), 401);
         }
 
-        $request->setUserResolver(function () use ($accessToken) {
-            return $accessToken->tokenable;
-        });
+        // take user ID from token
+        $userIdFromToken = $accessToken->tokenable_id;
+        
+         // Take user ID from route or from raw body
+        $routeUserId = $request->route('id') ?? $request->input('_account_id');
+
+        if ($userIdFromToken != $routeUserId) {
+            $response = new ResponseObject(403, 'Forbidden: You do not have access to this resource');
+            return response()->json($response->toArray(), 403);
+        }
 
         return $next($request);
+
+
     }
 }

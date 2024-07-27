@@ -277,6 +277,11 @@ public function up()
 php artisan migrate
 ```
 
+Or run one migration
+```
+php artisan migrate --path=/database/migrations/2024_07_11_023457_create_transaction_types_table.php
+```
+
 #### Use Eloquent in the controller (Sử dụng Eloquent trong controller)
 
 ```

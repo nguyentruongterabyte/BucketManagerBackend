@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Wallet;
 
 use App\Models\ResponseObject;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,10 +27,11 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            '_name' => 'required|string|max:25',
-            '_email' => 'required|string|email|max:255|unique:users',
-            '_password' => 'required|string|min:8|confirmed',
-            '_initial_currency_id' => 'required|integer|exists:currencies,id'
+            '_account_id' => 'required|integer|exists:users,id',
+            '_name' => 'required',
+            '_wallet_type_code' => 'required|exists:wallet_types,_code',
+            '_initial_amount' => 'required',
+            '_exclude' => 'required'
         ];
     }
 

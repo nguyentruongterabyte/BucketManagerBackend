@@ -57,6 +57,9 @@ class Kernel extends HttpKernel
         // custom auth sanctum
         'custom.auth.sanctum' => \App\Http\Middleware\CustomAuthSanctum::class,
 
+        // 
+        'check.user.id' => \App\Http\Middleware\CheckUserIdFromToken::class,
+        
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
