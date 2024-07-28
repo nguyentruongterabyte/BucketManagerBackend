@@ -68,7 +68,7 @@ Route::delete('/wallet-type/{code}', [WalletTypeController::class, 'destroy']);
 // Transaction
 Route::post('/transaction', [TransactionController::class, 'store'])->middleware(['custom.auth.sanctum']);
 Route::get('/transaction/{id}', [TransactionController::class, 'getByUserId'])->middleware(['custom.auth.sanctum', 'check.user.id']);
-Route::put('/transaction/update/{id}/{transactionId}', [TransactionController::class, 'update'])->middleware(['custom.auth.sanctum', 'check.user.id']);
-
+Route::put('/transaction/{id}/{transactionId}', [TransactionController::class, 'update'])->middleware(['custom.auth.sanctum', 'check.user.id']);
+Route::delete('/transaction/{id}/{transactionId}', [TransactionController::class, 'destroy'])->middleware(['custom.auth.sanctum', 'check.user.id']);
 // Category
 Route::get('/category', [CategoryController::class, 'index']);

@@ -49,4 +49,10 @@ class TransactionController extends Controller
         $response = new ResponseObject(200, 'Success', $transactionModels);
         return response()->json($response->toArray());
     }
+
+    public function destroy($id, $transactionId) {
+        Transaction::findOrFail($transactionId)->delete();
+        $response = new ResponseObject(204, 'Delete successfully');
+        return response()->json($response->toArray());
+    }
 }
