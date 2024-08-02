@@ -21,6 +21,7 @@ class Wallet extends Model
         '_initial_amount',
         '_amount',
         '_color',
+        '_icon',
         '_exclude',
     ];
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Wallet\CreateRequest;
 use App\Models\ResponseObject;
+use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 
@@ -21,11 +22,13 @@ class WalletController extends Controller
             '_wallet_type_code' => $request->_wallet_type_code,
             '_initial_amount' => $request->_initial_amount,
             '_color' => $request->_color,
+            '_amount' => $request->_amount,
+            '_icon' => $request->_icon,
             '_exclude' => $request->_exclude
         ]);
 
         $wallet->load('walletType');
-
+        $wallet->transactions = [];
         $response = new ResponseObject(201, 'Created', $wallet);
         return response()->json($response->toArray(), 201);
     }
@@ -34,6 +37,10 @@ class WalletController extends Controller
         $wallet = Wallet::findOrFail($walletId);
         $wallet->update($request->all());
         $wallet->load('walletType');
+        $wallet->transactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+            ->where('_wallet_id', $wallet->id)
+            ->orWhere('_from_wallet_id', $wallet->id)
+            ->get();
         $response = new ResponseObject(200, "update successfully", $wallet);
         return response()->json($response->toArray());
     }

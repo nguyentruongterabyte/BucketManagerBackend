@@ -11,6 +11,7 @@ use App\Http\Requests\Auth\PasswordCheckerRequest;
 use App\Mail\PasswordResetMail;
 use App\Models\RefreshToken;
 use App\Models\ResponseObject;
+use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -38,10 +39,19 @@ class AuthController extends Controller
 
     public function show($id) {
 
-        $user = User::findOrFail($id);
-        $user->load('currency');
-        $user->load('wallets');
-        $user->load('wallets.walletType');
+        $user = User::with([
+            'currency',                        // Load the related currency information
+            'wallets.walletType',              // Load wallet types for each wallet
+            'wallets'
+        ])->findOrFail($id);
+        // Eager load transactions with related models
+        $user->wallets->each(function ($wallet) {
+        // Load transactions and related models
+            $wallet->transactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+                ->where('_wallet_id', $wallet->id)
+                ->orWhere('_from_wallet_id', $wallet->id)
+                ->get();
+        });
         // return user information
         $response = new ResponseObject(200, 'Success', $user);
         return response()->json($response->toArray(), 200);
@@ -68,11 +78,18 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'token' => Str::random(64),
             'expires_at' => Carbon::now()->addDays(30), // refreshToken expires in 30 days
-        ]);  
+        ]);
 
-        $user->load('currency');
-        $user->load('wallets');
-        $user->load('wallets.walletType');
+        $user->load([
+            'currency',
+            'wallets.walletType', 
+            'wallets'
+        ]);
+        
+        // Eager load transactions with related models for each wallet
+        $user->wallets->each(function ($wallet) {
+            $wallet->transactions = [];
+        });
         // Create response object
         $response = new ResponseObject(201, 'User registered successfully', [
             'user' => $user,
@@ -103,11 +120,21 @@ class AuthController extends Controller
             'expires_at' => Carbon::now()->addDays(30), // refreshToken expires in 30 days
         ]);        
         
-        // Load the related currency information
-        $user->load('currency');
-        $user->load('wallets');
-        $user->load('wallets.walletType');
+        // Load related data similar to the show method
+        $user->load([
+            'currency',                        // Load the related currency information
+            'wallets.walletType',              // Load wallet types for each wallet
+            'wallets'
+        ]);
 
+        // Eager load transactions with related models for each wallet
+        $user->wallets->each(function ($wallet) {
+            $wallet->transactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+                ->where('_wallet_id', $wallet->id)
+                ->orWhere('_from_wallet_id', $wallet->id)
+                ->get();
+        });
+       
         $response = new ResponseObject(200, 'Success', [
             'user' => $user,
             'token' => $token, 
