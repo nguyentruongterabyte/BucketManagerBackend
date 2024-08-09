@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\EmailCheckerRequest;
 use App\Http\Requests\Auth\PasswordCheckerRequest;
 use App\Mail\PasswordResetMail;
+use App\Models\BudgetDetail;
 use App\Models\RefreshToken;
 use App\Models\ResponseObject;
 use App\Models\Transaction;
@@ -42,16 +43,21 @@ class AuthController extends Controller
         $user = User::with([
             'currency',                        // Load the related currency information
             'wallets.walletType',              // Load wallet types for each wallet
-            'wallets'
+            'wallets',
+            'budgets',
+            'budgets.budgetDetails',
+            'budgets.budgetDetails.category',
         ])->findOrFail($id);
         // Eager load transactions with related models
         $user->wallets->each(function ($wallet) {
         // Load transactions and related models
-            $wallet->transactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+            $wallet->transactions = Transaction::with(['category', 'wallet', 'fromWallet', 'toWallet'])
                 ->where('_wallet_id', $wallet->id)
                 ->orWhere('_from_wallet_id', $wallet->id)
                 ->get();
         });
+
+
         // return user information
         $response = new ResponseObject(200, 'Success', $user);
         return response()->json($response->toArray(), 200);
@@ -83,7 +89,10 @@ class AuthController extends Controller
         $user->load([
             'currency',
             'wallets.walletType', 
-            'wallets'
+            'wallets',
+            'budgets',
+            'budgets.budgetDetails',
+            'budgets.budgetDetails.category'
         ]);
         
         // Eager load transactions with related models for each wallet
@@ -124,12 +133,15 @@ class AuthController extends Controller
         $user->load([
             'currency',                        // Load the related currency information
             'wallets.walletType',              // Load wallet types for each wallet
-            'wallets'
+            'wallets',
+            'budgets',
+            'budgets.budgetDetails',
+            'budgets.budgetDetails.category'
         ]);
 
         // Eager load transactions with related models for each wallet
         $user->wallets->each(function ($wallet) {
-            $wallet->transactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+            $wallet->transactions = Transaction::with(['category', 'wallet', 'fromWallet', 'toWallet'])
                 ->where('_wallet_id', $wallet->id)
                 ->orWhere('_from_wallet_id', $wallet->id)
                 ->get();

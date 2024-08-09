@@ -20,7 +20,13 @@ class TransactionController extends Controller
     public function update(Request $request, $id, $transactionId) {
         $transaction = Transaction::findOrFail($transactionId);
         $transaction->update($request->all());
-        $transaction->load('category', 'wallet', 'fromWallet', 'toWallet');
+        $transaction->load(
+            'category',
+            'wallet',
+            'fromWallet', 
+            'toWallet'
+        );
+
         $response = new ResponseObject(200, "update successfully", $transaction);
         return response()->json($response->toArray());
     }

@@ -37,7 +37,7 @@ class WalletController extends Controller
         $wallet = Wallet::findOrFail($walletId);
         $wallet->update($request->all());
         $wallet->load('walletType');
-        $wallet->transactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+        $wallet->transactions = Transaction::with(['category', 'wallet', 'fromWallet', 'toWallet'])
             ->where('_wallet_id', $wallet->id)
             ->orWhere('_from_wallet_id', $wallet->id)
             ->get();

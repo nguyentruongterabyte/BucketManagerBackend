@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BudgetController;
 use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\API\CurrencyController;
 use Illuminate\Http\Request;
@@ -72,3 +73,7 @@ Route::put('/transaction/{id}/{transactionId}', [TransactionController::class, '
 Route::delete('/transaction/{id}/{transactionId}', [TransactionController::class, 'destroy'])->middleware(['custom.auth.sanctum', 'check.user.id']);
 // Category
 Route::get('/category', [CategoryController::class, 'index']);
+
+// Budget
+Route::post('/budget', [BudgetController::class, 'store'])->middleware(['custom.auth.sanctum', 'check.user.id']);
+

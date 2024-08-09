@@ -20,4 +20,8 @@ class Category extends Model
     public function transactions() {
         return $this->hasMany(Transaction::class, '_category_id');
     }
+
+    public function budgetDetails() {
+         return $this->hasMany(BudgetDetail::class, '_category_id');
+    }
 }
