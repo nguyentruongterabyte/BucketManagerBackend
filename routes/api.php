@@ -76,4 +76,5 @@ Route::get('/category', [CategoryController::class, 'index']);
 
 // Budget
 Route::post('/budget', [BudgetController::class, 'store'])->middleware(['custom.auth.sanctum', 'check.user.id']);
-
+Route::put('/budget/{id}/{budgetId}', [BudgetController::class, 'update'])->middleware(['custom.auth.sanctum', 'check.user.id']);
+Route::delete('/budget/{id}/{budgetId}',[BudgetController::class, 'destroy'])->middleware(['custom.auth.sanctum', 'check.user.id']);

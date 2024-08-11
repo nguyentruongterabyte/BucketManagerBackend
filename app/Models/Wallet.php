@@ -23,6 +23,7 @@ class Wallet extends Model
         '_color',
         '_icon',
         '_exclude',
+        '_is_deleted'
     ];
 
     protected $hidden = [

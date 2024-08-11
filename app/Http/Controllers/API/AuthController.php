@@ -9,7 +9,6 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\EmailCheckerRequest;
 use App\Http\Requests\Auth\PasswordCheckerRequest;
 use App\Mail\PasswordResetMail;
-use App\Models\BudgetDetail;
 use App\Models\RefreshToken;
 use App\Models\ResponseObject;
 use App\Models\Transaction;
@@ -42,8 +41,8 @@ class AuthController extends Controller
 
         $user = User::with([
             'currency',                        // Load the related currency information
-            'wallets.walletType',              // Load wallet types for each wallet
             'wallets',
+            'wallets.walletType',              // Load wallet types for each wallet
             'budgets',
             'budgets.budgetDetails',
             'budgets.budgetDetails.category',
@@ -88,8 +87,8 @@ class AuthController extends Controller
 
         $user->load([
             'currency',
-            'wallets.walletType', 
             'wallets',
+            'wallets.walletType', 
             'budgets',
             'budgets.budgetDetails',
             'budgets.budgetDetails.category'
@@ -132,8 +131,8 @@ class AuthController extends Controller
         // Load related data similar to the show method
         $user->load([
             'currency',                        // Load the related currency information
-            'wallets.walletType',              // Load wallet types for each wallet
             'wallets',
+            'wallets.walletType',              // Load wallet types for each wallet
             'budgets',
             'budgets.budgetDetails',
             'budgets.budgetDetails.category'
